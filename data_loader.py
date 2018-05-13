@@ -1,4 +1,3 @@
-import sys
 
 class LabelObject:
 	def __init__(self, frame, track_id, class_type, truncated, occluded, alpha,
@@ -24,28 +23,23 @@ def load_data(path):
 			label_elems = line.split()
 			
 			frame = label_elems[0]
-			track_id = label_elems[1]
+			track_id = int(label_elems[1])
 			class_type = label_elems[2]
 			truncated = label_elems[3]
 			occluded = label_elems[4]
 			alpha = label_elems[5]
 			bbox = label_elems[6:10]
 			dimensions = label_elems[10:13]
-			location = label_elems[13:16]
+			location = [float(i) for i in label_elems[13:16]]
 			rotation_y = label_elems[16]
 
 			labeled_objects.append(LabelObject(frame, track_id, class_type,
 				truncated, occluded, alpha, bbox, dimensions, location, rotation_y))
+
+
 
 	return labeled_objects
 
 
 
 
-if __name__ == "__main__":
-	if len(sys.argv) < 2:
-		print("Usage: python data_loader.py <file_name>")
-		sys.exit(1)
-	file_path = sys.argv[1]
-	labeled_objects = load_data(file_path)
-	print(labeled_objects)
