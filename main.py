@@ -33,10 +33,20 @@ if __name__ == "__main__":
 		kalman_points_x = []
 		kalman_points_y = []
 		for labeled_object in tracked_objects[track_id]:
-			z = labeled_object.location
+			z = labeled_object.bbox
+			print("z:")
+			print(z)
+			top_left_x = float(z[0])
+			top_left_y = float(z[1])
+
+			bottom_right_x = float(z[2])
+			bottom_right_y = float(z[3])
+
+			centre_x = (top_left_x + bottom_right_x) / 2
+			centre_y = (top_left_y + bottom_right_y) / 2
 			measurements = np.zeros((2, 1))
-			measurements[0] = z[0]
-			measurements[1] = z[2]
+			measurements[0] = centre_x
+			measurements[1] = centre_y
 
 			print("measurements:")
 			print(z)

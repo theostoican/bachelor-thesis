@@ -5,7 +5,7 @@ from numpy.linalg import inv
 class KalmanFilter:
 	def __init__(self):
 		# This is the interval between predictions
-		dt = 1
+		dt = 0.1
 
 		#Initialize state and covariance matrix
 		self.x = np.zeros((4, 1))
@@ -13,14 +13,14 @@ class KalmanFilter:
 						   [0, 1, 0, dt],
 						   [0, 0, 1, 0],
 						   [0, 0, 0, 1]])
-		self.P = np.matrix([[1, 0, 0, 0],
-						   [0, 1, 0, 0],
+		self.P = np.matrix([[100, 0, 0, 0],
+						   [0, 100, 0, 0],
 						   [0, 0, 1000, 0],
 						   [0, 0, 0, 1000]])
 		self.H = np.matrix([[1, 0, 0, 0],
 						    [0, 1, 0, 0]])
-		self.R = np.matrix([[0.0225, 0],
-						    [0, 0.0225]])
+		self.R = np.matrix([[0.0001, 0],
+						    [0, 0.0001]])
 
 
 	def predict(self):
@@ -37,5 +37,7 @@ class KalmanFilter:
 		K = self.P * H_t * inv(S)
 
 		# Update the state and covariance
+		#self.x[0] = z[0]
+		#self.x[1] = z[1]
 		self.x = self.x + K * y
 		self.P = self.P - K * self.H * self.P
