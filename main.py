@@ -2,13 +2,15 @@ from kalman_filter import KalmanFilter
 import data_loader
 import sys
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 
 if __name__ == "__main__":
 	tracked_objects = {}
 
 	if len(sys.argv) < 2:
-		print("Usage: python data_loader.py <file_name>")
+		print("Usage: python main.py <file_name>")
 		sys.exit(1)
 	file_path = sys.argv[1]
 	labeled_objects = data_loader.load_data(file_path)
@@ -26,6 +28,10 @@ if __name__ == "__main__":
 	for track_id in tracked_objects:
 		if track_id == -1:
 			continue
+		gt_points_x = []
+		gt_points_y = []
+		kalman_points_x = []
+		kalman_points_y = []
 		for labeled_object in tracked_objects[track_id]:
 			z = labeled_object.location
 			measurements = np.zeros((2, 1))
@@ -35,7 +41,14 @@ if __name__ == "__main__":
 			print("measurements:")
 			print(z)
 			x, P = filter.predict()
+			gt_points_x.append(measurements[0])
+			gt_points_y.append(measurements[1])
+			kalman_points_x.append(x[0])
+			kalman_points_y.append(x[1])
 			#print("x:")
-			print(x)
+			print(labeled_object.bbox)
 			filter.update(measurements)
+		plt.scatter(gt_points_x, gt_points_y)
+		plt.scatter(kalman_points_x, kalman_points_y)
+		plt.show()
 		break
