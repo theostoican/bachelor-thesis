@@ -19,8 +19,12 @@ class KalmanFilter:
 						   [0, 0, 0, 1000]])
 		self.H = np.matrix([[1, 0, 0, 0],
 						    [0, 1, 0, 0]])
-		self.R = np.matrix([[0.012, 0],
-						    [0, 0.012]])
+		self.R = np.matrix([[0.00001112, 0],
+						    [0, 0.00001122]])
+		#self.Q = np.matrix([[0.0005],
+		#					[0.0005],
+		#					[0.0005],
+		#					[0.0005]])
 
 
 	def predict(self):
@@ -28,6 +32,16 @@ class KalmanFilter:
 		self.P = self.F * self.P * np.transpose(self.F)
 
 		return self.x, self.P
+
+	def multi_step_predict(self, num_steps):
+		local_x = self.x
+		results = []
+
+		for i in range(num_steps):
+			results.append(local_x)
+			local_x = self.F * local_x
+
+		return results
 
 	def update(self, z):
 		# z has the form: 2 x 1
@@ -37,5 +51,7 @@ class KalmanFilter:
 		K = self.P * H_t * inv(S)
 
 		# Update the state and covariance
+		#self.x[0] = z[0]
+		#self.x[1] = z[1]
 		self.x = self.x + K * y
 		self.P = self.P - K * self.H * self.P
